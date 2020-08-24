@@ -19,12 +19,20 @@ Dino.prototype.toFeetInches = function() {
 // Create Dino Objects
 const url = 'http://localhost:3000/Dinos'; // Get Dinos JSON from file.
 
-fetch(url)
-    .then((resp) => resp.json()) // Transform the data into json
-    .then(function(data) {
-        // Create and append the li's to the ul
+
+
+let data = fetch(url)
+    .then(function(response) { //Written as standard function while I figure out arrow functions
+        return response.json();
     })
-})
+    .then(function(data) {
+        return data;
+    })
+    .catch(error => {
+        console.error(error);
+    });
+
+let dinos = data.PromiseValue;
 
 const dinoTest = new Dino(
     "Triceratops",
@@ -38,7 +46,7 @@ const dinoTest = new Dino(
 
 // Use IIFE to get human data from form
 const formData = (function() {
-    document.querySelector('.btn').addEventListener('click', function() {
+    document.querySelector('#btn').addEventListener('click', function() {
         // write what should happen when button is clicked.
     })
 })();
