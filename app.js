@@ -97,7 +97,11 @@ let dino = {
 let dinoArr = [];
 
 for (let i = 0; i < dino["Dinos"].length; i++) {
-    dinoArr.push(dino["Dinos"][i]);
+    var currentDino = dino["Dinos"][i]
+        //Create a new dino from the Dino Constructor
+    var myDino = new Dino(currentDino.species, currentDino.weight, currentDino.height, currentDino.diet, currentDino.where, currentDino.when, currentDino.fact);
+    //Push the dino into the dinoArray
+    dinoArr.push(myDino);
 };
 
 
@@ -148,18 +152,41 @@ const getFormData = (function() {
 
 
 // Generate Tiles for each Dino in Array
+function addTiles() {
+    document.getElementById("grid").innerHTML = '';
+    var cardArr = [];
+    for (let i = 0; i < dinoArr.length; i++) {
+        var currentDino = dinoArr[i];
+        var title = currentDino.species;
+        var img = "images/" + currentDino.species.toLowerCase() + ".png";
+        var fact = currentDino.fact;
+        var card = '<div class="grid-item"> <h3>' + title + '</h3> <img src="' + img + '"></img> <p>Fact: ' + fact + '<br></p> </div>';
+        cardArr.push(card);
+    }
+    return cardArr;
+}
+// Look up the modern way to add html with InnerHTML as Variables
 
 
 // Add tiles to DOM
+
+function addTilesToDOM(cardArr) {
+    for (let i = 0; i < cardArr.length; i++) {
+        currentCard = cardArr[i];
+        document.getElementById("grid").innerHTML += currentCard;
+    }
+}
+
 
 // Remove form from screen
 
 
 // On button click, prepare and display infographic
-
 const createObjects = function() { // function run on click events
     getFormData.getinput(); // Runs method inside of IIFE to get form data.
     console.log(person);
+    var cardArrResult = addTiles();
+    addTilesToDOM(cardArrResult);
 }
 
 document.querySelector('#btn').addEventListener('click', createObjects); // Add event listener to the Compare Me button that runs Create Objects on Click events
