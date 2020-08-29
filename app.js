@@ -16,6 +16,7 @@ Dino.prototype.toFeetInches = function() {
 };
 
 
+
 // Create Dino Objects
 
 let dino = {
@@ -99,78 +100,189 @@ let dinoArr = [];
 for (let i = 0; i < dino["Dinos"].length; i++) {
     var currentDino = dino["Dinos"][i]
         //Create a new dino from the Dino Constructor
-    var myDino = new Dino(currentDino.species, currentDino.weight, currentDino.height, currentDino.diet, currentDino.where, currentDino.when, currentDino.fact);
+    var myDino = new Dino(currentDino.species, currentDino.weight, parseInt(currentDino.height), currentDino.diet, currentDino.where, currentDino.when, currentDino.fact);
     //Push the dino into the dinoArray
     dinoArr.push(myDino);
 };
 
+// Store all dino facts in an array 
+
 
 // Create Human Object
-function Human(name, feet, inches, weight, diet) { // Create Human Constructor Function
-    this.name = name;
-    this.feet = feet;
-    this.inches = inches;
-    this.weight = weight;
-    this.diet = diet;
-};
+const human = {};
+
+// takes feet and inches from an object and creates a new property call inches
+function toInches(obj) {
+    let calcInches = (this.feet * 12) + this.inches;
+    this.height = calcInches;
+}
+const boundToInches = toInches.bind(human);
+
 
 // Use IIFE to get human data from form
+// Could build form Check Method to make sure height & inches are greater than or equal 0
 
-const getFormData = (function() {
+const getFormData = (function() { // IIFE runs immediately and returns a method that closes over Selectors. 
     const selectors = { // Create object of selectors to make them easier to update later
         name: '#name',
         feet: '#feet',
         inches: '#inches',
         weight: '#weight',
         diet: '#diet'
+
     }
     return { // return an object with methods that access form data
         getinput: function() { // getinput method returns a new Human object called person
 
-            let name = document.querySelector(selectors.name).value; // Instantiate closure'd variables
-            let feet = document.querySelector(selectors.feet).value;
-            let inches = document.querySelector(selectors.inches).value;
-            let weight = document.querySelector(selectors.weight).value;
-            let diet = document.querySelector(selectors.diet).value;
-
-            return person = new Human(name, feet, inches, weight, diet);
+            human.name = document.querySelector(selectors.name).value; // Instantiate closed over variables
+            human.feet = parseInt(document.querySelector(selectors.feet).value);
+            human.inches = parseInt(document.querySelector(selectors.inches).value);
+            human.weight = document.querySelector(selectors.weight).value;
+            human.diet = document.querySelector(selectors.diet).value;
         }
     }
 })();
 
 
+let facts = ["compareheight", "compareweight", "comparediet"];
+
+for (let i = 0; i < dinoArr.length; i++) {
+    facts.push(dinoArr[i].fact);
+}
 // Create Dino Compare Method 1
 // NOTE: Weight in JSON file is in lbs, height in inches. 
 
+// check human height against all dinosaurs show which dinosaurs you are taller than
+function compareHeight(humanHeight, dinoArr) {
+    let smallerThanHuman = [];
+    for (let i = 0; i < dinoArr.length; i++) {
+        // if current dino is smaller than human, add to smallerThanHuman
+        if (dinoArr[i].height < humanHeight) {
+            smallerThanHuman.push(dinoArr[i]);
+        }
+    }
+    human.smallDino = smallerThanHuman;
+}
+
+
+function compareDinoHeight(currentDino) {
+    if (currentDino > human.height) {
+        return false;
+    }
+    return true;
+}
+
+
+
+
+// Result string "you are taller/shorter than this dinosaur"
 
 // Create Dino Compare Method 2
 // NOTE: Weight in JSON file is in lbs, height in inches.
+
+function compareDinoWeight(currentDino) {
+    if (currentDino > human.weight) {
+        return false;
+    }
+    return true;
+}
+
+
 
 
 // Create Dino Compare Method 3
 // NOTE: Weight in JSON file is in lbs, height in inches.
 
+function compareDinoDiet(currentDino) {
+    if (currentDino == human.diet) {
+        return true;
+    }
+    return false;
+}
 
-// Generate Tiles for each Dino in Array
-function addTiles() {
-    document.getElementById("grid").innerHTML = '';
+
+
+
+
+// Facts should be an array of Dino Facts & result of the three methods above. 
+
+
+
+// Build Dino Tiles
+function buildDinoTiles() { // Use dinoArr to build an array of cards called 
     var cardArr = [];
-    for (let i = 0; i < dinoArr.length; i++) {
+    for (let i = 0; i < dinoArr.length; i++) { //iterate over the dinoArr and add each card to an array called cardArr
         var currentDino = dinoArr[i];
         var title = currentDino.species;
-        var img = "images/" + currentDino.species.toLowerCase() + ".png";
-        var fact = currentDino.fact;
+        var img = "images/" + currentDino.species.toLowerCase() + ".png"; // look up PNG using the species name
+        // then grab random fact to insert into dino tile. 
+        // if the fact chosen is the compareDinoHeight 
+        var fact = facts[Math.floor(Math.random() * facts.length)]; // grab random item from facts array. 
+        //Check the random fact
+        //If the random fact contains the species of the currentDino (stegosaurus)
+        //Then check the height
+        if (fact == "compareheight") {
+            let compareResult = compareDinoHeight(currentDino.height);
+            if (compareResult == true) {
+                fact = "You are taller than " + currentDino.species;
+            };
+            if (compareResult == false) {
+                fact = "You are smaller than " + currentDino.species;
+            };
+        };
+
+        if (fact == "compareweight") {
+            let compareResult = compareDinoWeight(currentDino.weight);
+            if (compareResult == true) {
+                fact = "You are fatter than " + currentDino.species;
+            };
+            if (compareResult == false) {
+                fact = "You are skinner than " + currentDino.species;
+            };
+        };
+
+        if (fact == "comparediet") {
+            let compareResult = compareDinoDiet(currentDino.diet);
+            if (compareResult == true) {
+                fact = "You have the same diet as the " + currentDino.species;
+            };
+            if (compareResult == false) {
+                fact = "You have a different diet than the " + currentDino.species + ". They are a" + currentDino.diet + ".";
+            };
+        };
+
+
         var card = '<div class="grid-item"> <h3>' + title + '</h3> <img src="' + img + '"></img> <p>Fact: ' + fact + '<br></p> </div>';
         cardArr.push(card);
     }
     return cardArr;
 }
+
+function buildHumanTile() { // Creates a tile from the human object
+    var img = "images/human.png";
+    var title = human.name;
+    var feet = human.feet;
+    var inches = human.inches;
+    var weight = human.weight;
+    var diet = human.diet;
+    let smallDinoNames = []
+    for (var i = 0; i < human.smallDino.length; i++) {
+        currentDinoName = human.smallDino[i].species;
+        smallDinoNames.push(currentDinoName);
+    };
+    smallDinoNames = smallDinoNames.join(', ');
+    var humanCard = '<div class="grid-item"> <h3>' + title + '</h3> <img src="' + img + '"></img> <p>Feet: ' + feet + '<br><span>You are taller than: ' + smallDinoNames + '</span></p></div>';
+    return humanCard;
+}
+
 // Look up the modern way to add html with InnerHTML as Variables
 
 
 // Add tiles to DOM
-
-function addTilesToDOM(cardArr) {
+function addTilesToDOM(cardArr, humanTileResult) { // Takes the array cardArr and appends each card to the inner html of the grid
+    document.getElementById("grid").innerHTML = ''; // Set inner html of .grid to empty string
+    // insert human object into 5th position using arr.splice(index, 0, item);
+    cardArr.splice(4, 0, humanTileResult);
     for (let i = 0; i < cardArr.length; i++) {
         currentCard = cardArr[i];
         document.getElementById("grid").innerHTML += currentCard;
@@ -179,14 +291,21 @@ function addTilesToDOM(cardArr) {
 
 
 // Remove form from screen
+function hideForm() {
+    var formElement = document.getElementById('dino-compare');
+    formElement.classList.add('hidden');
+}
 
 
 // On button click, prepare and display infographic
-const createObjects = function() { // function run on click events
-    getFormData.getinput(); // Runs method inside of IIFE to get form data.
-    console.log(person);
-    var cardArrResult = addTiles();
-    addTilesToDOM(cardArrResult);
+const doEverything = function() { // function run on click events
+    hideForm();
+    getFormData.getinput(); // Runs method inside of IIFE to get form data and returns human object.
+    boundToInches(); // Adds height as inches to human object
+    compareHeight(human.height, dinoArr);
+    var cardArrResult = buildDinoTiles(); // Array containing dino tiles
+    var humanTileResult = buildHumanTile(); // takes form data and builds human tile
+    addTilesToDOM(cardArrResult, humanTileResult);
 }
 
-document.querySelector('#btn').addEventListener('click', createObjects); // Add event listener to the Compare Me button that runs Create Objects on Click events
+document.querySelector('#btn').addEventListener('click', doEverything); // Add event listener to the Compare Me button that runs Create Objects on Click events
