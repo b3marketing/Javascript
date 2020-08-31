@@ -9,7 +9,7 @@ function Dino(species, weight, height, diet, where, when, fact) {
     this.fact = fact;
 };
 
-Dino.prototype.toFeetInches = function() {
+Dino.prototype.toFeetInches = function() { // Created but not used...
     let feet = Math.floor(this.height / 12);
     let inches = (this.height - (feet * 12))
     this.height = [feet, inches];
@@ -19,7 +19,7 @@ Dino.prototype.toFeetInches = function() {
 
 // Create Dino Objects
 
-let dino = {
+let dino = { // Couldn't figure out how to get data from a promise. It's taught later in the course so I went this route
     "Dinos": [{
             "species": "Triceratops",
             "weight": 13000,
@@ -101,22 +101,19 @@ for (let i = 0; i < dino["Dinos"].length; i++) {
     var currentDino = dino["Dinos"][i]
         //Create a new dino from the Dino Constructor
     var myDino = new Dino(currentDino.species, currentDino.weight, parseInt(currentDino.height), currentDino.diet, currentDino.where, currentDino.when, currentDino.fact);
-    //Push the dino into the dinoArray
-    dinoArr.push(myDino);
+    dinoArr.push(myDino); //Push the dino into the dinoArray
 };
 
-// Store all dino facts in an array 
 
 
 // Create Human Object
 const human = {};
 
-// takes feet and inches from an object and creates a new property call inches
-function toInches(obj) {
+function toInches(obj) { // takes feet and inches from an object and creates a new property on the object called height
     let calcInches = (this.feet * 12) + this.inches;
     this.height = calcInches;
 }
-const boundToInches = toInches.bind(human);
+const boundToInches = toInches.bind(human); // Use Bind to set this value to human
 
 
 // Use IIFE to get human data from form
@@ -132,9 +129,8 @@ const getFormData = (function() { // IIFE runs immediately and returns a method 
 
     }
     return { // return an object with methods that access form data
-        getinput: function() { // getinput method returns a new Human object called person
-
-            human.name = document.querySelector(selectors.name).value; // Instantiate closed over variables
+        getinput: function() { // getinput method assigns form values to human object properties
+            human.name = document.querySelector(selectors.name).value;
             human.feet = parseInt(document.querySelector(selectors.feet).value);
             human.inches = parseInt(document.querySelector(selectors.inches).value);
             human.weight = document.querySelector(selectors.weight).value;
@@ -144,16 +140,17 @@ const getFormData = (function() { // IIFE runs immediately and returns a method 
 })();
 
 
-let facts = ["compareheight", "compareweight", "comparediet"];
+let facts = ["compareheight", "compareweight", "comparediet"]; // Create a facts array and add string values to be used later
 
-for (let i = 0; i < dinoArr.length; i++) {
+for (let i = 0; i < dinoArr.length; i++) { // Add all the dino facts to the facts array
     facts.push(dinoArr[i].fact);
 }
+
+
 // Create Dino Compare Method 1
 // NOTE: Weight in JSON file is in lbs, height in inches. 
 
-// check human height against all dinosaurs show which dinosaurs you are taller than
-function compareHeight(humanHeight, dinoArr) {
+function compareHeight(humanHeight, dinoArr) { // BONUS METHOD - check human height against all dinosaurs and show which dinosaurs user is taller than
     let smallerThanHuman = [];
     for (let i = 0; i < dinoArr.length; i++) {
         // if current dino is smaller than human, add to smallerThanHuman
@@ -165,7 +162,7 @@ function compareHeight(humanHeight, dinoArr) {
 }
 
 
-function compareDinoHeight(currentDino) {
+function compareDinoHeight(currentDino) { // compares the height of the dino passed into it with the value of the human height and returns true or false
     if (currentDino > human.height) {
         return false;
     }
@@ -173,14 +170,10 @@ function compareDinoHeight(currentDino) {
 }
 
 
-
-
-// Result string "you are taller/shorter than this dinosaur"
-
 // Create Dino Compare Method 2
 // NOTE: Weight in JSON file is in lbs, height in inches.
 
-function compareDinoWeight(currentDino) {
+function compareDinoWeight(currentDino) { // compares the weight of the dino passed in with the human weight and returns true or false
     if (currentDino > human.weight) {
         return false;
     }
@@ -188,12 +181,10 @@ function compareDinoWeight(currentDino) {
 }
 
 
-
-
 // Create Dino Compare Method 3
 // NOTE: Weight in JSON file is in lbs, height in inches.
 
-function compareDinoDiet(currentDino) {
+function compareDinoDiet(currentDino) { // compares the diet of the dino passed in with the human weight and returns true or false
     if (currentDino == human.diet) {
         return true;
     }
@@ -202,25 +193,15 @@ function compareDinoDiet(currentDino) {
 
 
 
-
-
-// Facts should be an array of Dino Facts & result of the three methods above. 
-
-
-
 // Build Dino Tiles
-function buildDinoTiles() { // Use dinoArr to build an array of cards called 
+function buildDinoTiles() {
     var cardArr = [];
-    for (let i = 0; i < dinoArr.length; i++) { //iterate over the dinoArr and add each card to an array called cardArr
-        var currentDino = dinoArr[i];
-        var title = currentDino.species;
+    for (let i = 0; i < dinoArr.length; i++) { // Iterate over the dinoArr and add each card to an array called cardArr
+        var currentDino = dinoArr[i]; // Get the current dino
+        var title = currentDino.species; // Set variables to be used in cards equal to currentDino properties
         var img = "images/" + currentDino.species.toLowerCase() + ".png"; // look up PNG using the species name
-        // then grab random fact to insert into dino tile. 
-        // if the fact chosen is the compareDinoHeight 
-        var fact = facts[Math.floor(Math.random() * facts.length)]; // grab random item from facts array. 
-        //Check the random fact
-        //If the random fact contains the species of the currentDino (stegosaurus)
-        //Then check the height
+        var fact = facts[Math.floor(Math.random() * facts.length)]; // grab a random item from facts array. 
+        // Compare the chosen fact with three different strings. Each string corresponds with an if statement which runs a specific function. Depending on the compareResult value, set the fact content.
         if (fact == "compareheight") {
             let compareResult = compareDinoHeight(currentDino.height);
             if (compareResult == true) {
@@ -252,7 +233,7 @@ function buildDinoTiles() { // Use dinoArr to build an array of cards called
         };
 
 
-        var card = '<div class="grid-item"> <h3>' + title + '</h3> <img src="' + img + '"></img> <p>Fact: ' + fact + '<br></p> </div>';
+        var card = '<div class="grid-item"> <h3>' + title + '</h3> <img src="' + img + '"></img> <p>Fact: ' + fact + '<br></p> </div>'; // Build the card
         cardArr.push(card);
     }
     return cardArr;
@@ -265,7 +246,8 @@ function buildHumanTile() { // Creates a tile from the human object
     var inches = human.inches;
     var weight = human.weight;
     var diet = human.diet;
-    let smallDinoNames = []
+
+    let smallDinoNames = [] // Find which dinos are shorter than the human height and write them to an array.
     for (var i = 0; i < human.smallDino.length; i++) {
         currentDinoName = human.smallDino[i].species;
         smallDinoNames.push(currentDinoName);
@@ -274,14 +256,13 @@ function buildHumanTile() { // Creates a tile from the human object
     var humanCard = '<div class="grid-item"> <h3>' + title + '</h3> <img src="' + img + '"></img> <p>Feet: ' + feet + '<br><span>You are taller than: ' + smallDinoNames + '</span></p></div>';
     return humanCard;
 }
-
 // Look up the modern way to add html with InnerHTML as Variables
 
 
 // Add tiles to DOM
 function addTilesToDOM(cardArr, humanTileResult) { // Takes the array cardArr and appends each card to the inner html of the grid
-    document.getElementById("grid").innerHTML = ''; // Set inner html of .grid to empty string
-    // insert human object into 5th position using arr.splice(index, 0, item);
+    document.getElementById("grid").innerHTML = ''; // Set inner html of .grid to empty string in case we add a reset function
+    // insert human object into 5th position
     cardArr.splice(4, 0, humanTileResult);
     for (let i = 0; i < cardArr.length; i++) {
         currentCard = cardArr[i];
@@ -298,7 +279,7 @@ function hideForm() {
 
 
 // On button click, prepare and display infographic
-const doEverything = function() { // function run on click events
+const doEverything = function() { // function run on click event
     hideForm();
     getFormData.getinput(); // Runs method inside of IIFE to get form data and returns human object.
     boundToInches(); // Adds height as inches to human object
