@@ -10,8 +10,7 @@ function Dino(species, weight, height, diet, where, when, fact) {
 }
 
 // Create Dino Objects
-
-let dino = { // Couldn't figure out how to get data from a promise. It's taught later in the course so I went this route
+let dino = {
     "Dinos": [{
             "species": "Triceratops",
             "weight": 13000,
@@ -110,7 +109,6 @@ const boundToInches = toInches.bind(human); // Use Bind to set this value to hum
 
 // Use IIFE to get human data from form
 // Could build form Check Method to make sure height & inches are greater than or equal 0
-
 const getFormData = (function() { // IIFE runs immediately and returns a method that closes over Selectors. 
     const selectors = { // Create object of selectors to make them easier to update later
         name: "#name",
@@ -118,7 +116,6 @@ const getFormData = (function() { // IIFE runs immediately and returns a method 
         inches: "#inches",
         weight: "#weight",
         diet: "#diet"
-
     }
     return { // return an object with methods that access form data
         getinput: function() { // getinput method assigns form values to human object properties
@@ -207,7 +204,7 @@ function buildDinoTiles() {
                 fact = "You have the same diet as the " + currentDino.species;
             }
             if (compareResult == false) {
-                fact = "You have a different diet than the " + currentDino.species + ". They are a" + currentDino.diet + ".";
+                fact = "You have a different diet than the " + currentDino.species + ". They are a " + currentDino.diet + ".";
             }
         }
 
@@ -251,8 +248,8 @@ const doEverything = function() { // function run on click event
     hideForm();
     getFormData.getinput(); // Runs method inside of IIFE to get form data and returns human object.
     boundToInches(); // Adds height as inches to human object
-    let cardArrResult = buildDinoTiles(); // Array containing dino tiles
-    let humanTileResult = buildHumanTile(); // takes form data and builds human tile
+    const cardArrResult = buildDinoTiles(); // Array containing dino tiles
+    const humanTileResult = buildHumanTile(); // takes form data and builds human tile
     addTilesToDOM(cardArrResult, humanTileResult);
 }
 
